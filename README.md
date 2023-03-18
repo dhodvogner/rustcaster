@@ -28,3 +28,7 @@ $ npm run build
 $ npm run serve
 // Then navigate to http://localhost:8080/public
 ```
+
+## 🕹 Controls
+
+- Move: `W`, `A`, `S`, `D`
