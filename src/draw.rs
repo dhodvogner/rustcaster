@@ -1,10 +1,12 @@
 #[cfg(target_arch = "wasm32")]
 use web_sys::console;
 
+use std::sync::MutexGuard;
+
 use crate::color;
 use crate::Screen;
 
-pub fn put_pixel(x: f64, y: f64, color: color::Color) {
+pub fn put_pixel(x: f64, y: f64, color: color::Color, output_buffer: &mut MutexGuard<Vec<u8>>) {
     let x = x as i32;
     let y = y as i32;
 
@@ -15,24 +17,26 @@ pub fn put_pixel(x: f64, y: f64, color: color::Color) {
     let number = y * Screen::global().width + x;
     let rgba_index: usize = (number * 4) as usize;
 
-    Screen::global().output_buffer.lock().unwrap()[rgba_index + 0] = color.r;
-    Screen::global().output_buffer.lock().unwrap()[rgba_index + 1] = color.g;
-    Screen::global().output_buffer.lock().unwrap()[rgba_index + 2] = color.b;
-    Screen::global().output_buffer.lock().unwrap()[rgba_index + 3] = color.a;
+    output_buffer[rgba_index + 0] = color.r;
+    output_buffer[rgba_index + 1] = color.g;
+    output_buffer[rgba_index + 2] = color.b;
+    output_buffer[rgba_index + 3] = color.a;
 }
 
 pub fn fill(color: color::Color) {
+    let mut locked_buffer = Screen::global().output_buffer.lock().unwrap();
     for y in 0..Screen::global().height {
         for x in 0..Screen::global().width {
-            put_pixel(x as f64, y as f64, color);
+            put_pixel(x as f64, y as f64, color, &mut locked_buffer);
         }
     }
 }
 
 pub fn draw_rect(x: i32, y: i32, width: i32, height: i32, color: color::Color) {
+    let mut locked_buffer = Screen::global().output_buffer.lock().unwrap();
     for ny in y..y + width {
         for nx in x..x + height {
-            put_pixel(nx as f64, ny as f64, color);
+            put_pixel(nx as f64, ny as f64, color, &mut locked_buffer);
         }
     }
 }
@@ -65,6 +69,8 @@ pub fn draw_line(x1: f64, y1: f64, x2: f64, y2: f64, color: color::Color) {
     let mut error = dx - dy;
     let mut loop_count = 0;
 
+    let mut locked_buffer = Screen::global().output_buffer.lock().unwrap();
+
     loop {
         if loop_count > 1000 {
             cfg_if::cfg_if! {
@@ -77,7 +83,7 @@ pub fn draw_line(x1: f64, y1: f64, x2: f64, y2: f64, color: color::Color) {
             break;
         }
 
-        put_pixel(x, y, color);
+        put_pixel(x, y, color, &mut locked_buffer);
 
         if x == target_x && y == target_y {
             break;
