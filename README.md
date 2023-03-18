@@ -6,7 +6,15 @@ Based on: [3DSage's Make Your Own Raycaster series](https://www.youtube.com/watc
 
 Why? Just for fun and learning. 🙂
 
-## 🛠️ Build
+## 🖥 On desktop
+
+```shell
+$ cargo run
+```
+
+Some reasone it super slooooooowwwww, I need to figure out why 🤷‍♂️
+
+## 🛠️ Build for web
 
 ```shell
 $ wasm-pack build --target web
