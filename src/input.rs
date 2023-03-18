@@ -28,8 +28,8 @@ impl Input {
         match key {
             87 => self.up = true, // W
             83 => self.down = true, // S
-            65 => self.right = true, // D
-            68 => self.left = true, // A
+            65 => self.right = true, // A
+            68 => self.left = true, // D
             _ => {}
         }
     }
