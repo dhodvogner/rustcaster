@@ -9,10 +9,9 @@ Why? Just for fun and learning. 🙂
 ## 🖥 On desktop
 
 ```shell
-$ cargo run
+$ cargo run --release
 ```
-
-Some reasone it super slooooooowwwww, I need to figure out why 🤷‍♂️
+In debug mode it's too slow to be playable. 😅
 
 ## 🛠️ Build for web
 

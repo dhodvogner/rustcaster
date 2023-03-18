@@ -13,6 +13,9 @@ pub struct Player {
     pub dy: f64,
     pub angle: f64,
     size: f64,
+
+    speed: f64,
+    pub turn_speed: f64,
 }
 
 impl Player {
@@ -34,6 +37,8 @@ impl Player {
             dy,
             angle,
             size: 8.0,
+            speed: 8.0,
+            turn_speed: 5.0,
         }
     }
 
@@ -90,14 +95,14 @@ impl Player {
     }
 
     pub fn move_foward(&mut self) {
-        let new_x = self.x + self.dx * 5.0;
-        let new_y = self.y + self.dy * 5.0;
+        let new_x = self.x + self.dx * self.speed;
+        let new_y = self.y + self.dy * self.speed;
         self.set_position(new_x, new_y);
     }
 
     pub fn move_backward(&mut self) {
-        let new_x = self.x - self.dx * 5.0;
-        let new_y = self.y - self.dy * 5.0;
+        let new_x = self.x - self.dx * self.speed;
+        let new_y = self.y - self.dy * self.speed;
         self.set_position(new_x, new_y);
     }
 }

@@ -92,11 +92,11 @@ pub fn present(_dt: f64) {
     }
 
     if Input::global().left {
-        Player::global().rotate(-5.0);
+        Player::global().rotate(-Player::global().turn_speed);
     }
 
     if Input::global().right {
-        Player::global().rotate(5.0);
+        Player::global().rotate(Player::global().turn_speed);
     }
 
     Map::global().draw_2d();

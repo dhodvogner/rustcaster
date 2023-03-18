@@ -50,7 +50,7 @@ fn main() {
     let mut vao = 0;
     let mut texture = 0;
 
-    println!("Program linked");
+    //println!("Program linked");
 
     //let pos_str = CString::new("position").unwrap();
 
@@ -68,7 +68,7 @@ fn main() {
             gl::STATIC_DRAW,
         );
 
-        println!("Data uploaded");
+        //println!("Data uploaded");
 
         gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE as GLboolean, 0, ptr::null());
         gl::EnableVertexAttribArray(0);
@@ -88,7 +88,7 @@ fn main() {
         //     ptr::null(),
         // );
     
-        println!("Data specified");
+        //println!("Data specified");
 
         gl::GenTextures(1, &mut texture);
         gl::BindTexture(gl::TEXTURE_2D, texture);
@@ -113,9 +113,8 @@ fn main() {
                 // If the window is resized, we need to resize the output buffer as well.
                 WindowEvent::Resized(physical_size) => gl_context.resize(physical_size),
                 WindowEvent::KeyboardInput { input, .. } => {
-                    println!("Kyeboard input: {:?}", input);
+                    //println!("Kyeboard input: {:?}", input);
                     imitate_js_input(input);
-                    gl_context.window().request_redraw(); // TODO: Why it is super slooooowww??
                 },
                 WindowEvent::CloseRequested => {
                     // Cleanup
@@ -127,17 +126,12 @@ fn main() {
                         gl::DeleteVertexArrays(1, &vao);
                         gl::DeleteTextures(1, &texture);
                     }
-
-                    println!("Cleaned up");
-
                     *control_flow = ControlFlow::Exit
                 },
                 _ => (),
             },
             Event::RedrawRequested(_) => {
                 unsafe {
-                    println!("Redraw requested");
-
                     gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                     gl::Clear(gl::COLOR_BUFFER_BIT);
 
@@ -166,7 +160,10 @@ fn main() {
                     gl::DrawArrays(gl::TRIANGLES, 0, 3);
                 }
                 gl_context.swap_buffers().unwrap();
-            },            
+            },
+            Event::MainEventsCleared => {
+                gl_context.window().request_redraw();
+            },       
             _ => (),
         }
     });
