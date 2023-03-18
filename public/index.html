@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rustcaster</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        canvas {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="1024" height="512"></canvas>
+
+    <div class="fps"></div>
+
+    <script type="module">
+        import wasmInit from '../pkg/rustcaster.js';
+
+        const setupCanvas = () => {
+            const canvasElement = document.querySelector("canvas");
+            const width = canvasElement.width;
+            const height = canvasElement.height;
+            const canvasContext = canvasElement.getContext("2d");
+            const canvasImageData = canvasContext.createImageData(width, height);
+            canvasContext.clearRect(0, 0, width, height);
+
+            return {
+                canvasContext,
+                canvasImageData,
+                width,
+                height
+            }
+        }
+
+        const run = async () => {
+            // Instantiate our wasm module
+            const rustWasm = await wasmInit("../pkg/rustcaster_bg.wasm");
+
+            const {
+                canvasContext,
+                canvasImageData,
+                width,
+                height
+            } = setupCanvas();
+
+            await rustWasm.setup(width, height);
+
+            const draw = (deltaTime) => {
+                rustWasm.present(deltaTime);
+
+                // Create a Uint8Array to give us access to Wasm Memory
+                const wasmByteMemoryArray = new Uint8Array(rustWasm.memory.buffer);
+                const outputPointer =  rustWasm.get_output_buffer_pointer();
+                const imageDataArray = wasmByteMemoryArray.slice(
+                    outputPointer,
+                    outputPointer + width * height * 4
+                );
+
+                // Update the canvas with the new image data
+                canvasImageData.data.set(imageDataArray);
+                canvasContext.clearRect(0, 0, width, height);
+                canvasContext.putImageData(canvasImageData, 0, 0);
+            };
+
+            // Handle keyboard input
+            const keyDown = (e) => {
+                rustWasm.key_down(e.keyCode);
+            }
+
+            const keyUp = (e) => {
+                rustWasm.key_up(e.keyCode);
+            }
+
+            window.addEventListener("keydown", keyDown);
+            window.addEventListener("keyup", keyUp);
+
+            let start, prevTimestamp;
+            let fpsdiv = document.querySelector(".fps");
+
+            const step = (timestamp) => {
+                if(!start) start = timestamp;
+
+                const elapsed = timestamp - start;
+                const delta = timestamp - prevTimestamp;
+                
+                draw(delta);
+
+                const fps = Math.round(1000 / delta);
+                fpsdiv.innerText = `${fps}fps`;
+
+                prevTimestamp = timestamp;
+                requestAnimationFrame(step);
+            }
+
+            requestAnimationFrame(step);
+        }
+        run();
+    </script>
+</body>
+
+</html>
