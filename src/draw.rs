@@ -1,3 +1,4 @@
+#[cfg(target_arch = "wasm32")]
 use web_sys::console;
 
 use crate::color;
@@ -66,7 +67,13 @@ pub fn draw_line(x1: f64, y1: f64, x2: f64, y2: f64, color: color::Color) {
 
     loop {
         if loop_count > 1000 {
-            console::warn_1(&format!("Warning: Loop count exceeded").into());
+            cfg_if::cfg_if! {
+                if #[cfg(target_arch = "wasm32")] {
+                console::warn_1(&format!("Warning: Loop count exceeded").into());
+                } else {
+                    println!("Warning: Loop count exceeded");
+                } 
+            }
             break;
         }
 

@@ -1,10 +1,8 @@
-use js_sys::Math::{sin, cos, tan};
-
 use crate::color;
 use crate::map::Map;
 use crate::player::Player;
 use crate::draw::draw_line;
-use crate::math::{fix_ang, deg_to_rad};
+use crate::math::{fix_ang, deg_to_rad, sin, cos, tan};
  
 pub fn cast_ray() {
     let mut rx; 

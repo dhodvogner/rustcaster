@@ -1,11 +1,9 @@
-use js_sys::Math::{sin, cos};
-
 use crate::PLAYER_INSTANCE;
 use crate::color;
 use crate::draw::draw_line;
 use crate::draw::{draw_rect};
 use crate::screen::Screen;
-use crate::math::{fix_ang, deg_to_rad};
+use crate::math::{fix_ang, deg_to_rad, sin, cos};
 
 #[derive(Debug)]
 pub struct Player {

@@ -7,10 +7,17 @@ mod map;
 mod input;
 mod ray;
 
-extern crate console_error_panic_hook;
 use std::panic;
-use wasm_bindgen::prelude::*;
 use once_cell::sync::OnceCell;
+
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
+#[cfg(target_arch = "wasm32")]
+extern crate console_error_panic_hook;
+
+#[cfg(target_arch = "wasm32")]
+use web_sys::console;
 
 use crate::draw::{fill};
 use crate::screen::Screen;
@@ -24,12 +31,22 @@ static mut PLAYER_INSTANCE: OnceCell<Player> = OnceCell::new();
 static MAP_INSTANCE: OnceCell<Map> = OnceCell::new();
 static mut INPUT_INSTANCE: OnceCell<Input> = OnceCell::new();
 
-#[wasm_bindgen(start)]
-pub fn main() {
-    panic::set_hook(Box::new(console_error_panic_hook::hook));
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
+pub fn init_lib() {
+    cfg_if::cfg_if! {
+        if #[cfg(target_arch = "wasm32")] {
+            console::log_1(&"Running on wasm platform".into());
+            panic::set_hook(Box::new(console_error_panic_hook::hook));
+        } else {
+            println!("Running on native platform");
+            panic::set_hook(Box::new(|info| {
+                eprintln!("{}", info);
+            }));
+        }
+    }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn setup(width: i32, height: i32) {
     let screen = Screen::new(width, height);
     SCREEN_INSTANCE.set(screen).unwrap();
@@ -44,24 +61,24 @@ pub fn setup(width: i32, height: i32) {
     unsafe { INPUT_INSTANCE.set(input).unwrap() };
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn get_output_buffer_pointer() -> *const u8 {
     let pointer: *const u8;
     pointer = Screen::global().output_buffer.lock().unwrap().as_ptr();
     return pointer;
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn key_down(key: u8) {
     Input::global().key_down(key);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn key_up(key: u8) {
     Input::global().key_up(key);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub fn present(_dt: f64) {
     let color = color::Color::new(76, 76, 76, 255);
     fill(color);
