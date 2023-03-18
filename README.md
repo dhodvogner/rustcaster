@@ -1,6 +1,6 @@
 # Rustcaster
 
-Raycaster pseudo 3D (2.5D) implementation in Rust without OpenGL.
+Pseudo-3D raycaster implementation in Rust without OpenGL.
 
 Based on: [3DSage's Make Your Own Raycaster series](https://www.youtube.com/watch?v=gYRrGTC7GtA)
 
