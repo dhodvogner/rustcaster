@@ -27,4 +27,6 @@ $ npm run serve
 
 ## 🕹 Controls
 
-- Move: `W`, `A`, `S`, `D`
+- Move: `W`, `S`,
+- Loook: `A`, `D`
+- Strafe: `Q`, `E`

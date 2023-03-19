@@ -37,8 +37,8 @@ impl Player {
             dy,
             angle,
             size: 8.0,
-            speed: 8.0,
-            turn_speed: 5.0,
+            speed: 15.0,
+            turn_speed: 20.0,
         }
     }
 
@@ -85,8 +85,8 @@ impl Player {
         draw_line(self.x, self.y, x2, y2, color);
     }
 
-    pub fn rotate(&mut self, angle: f64) {
-        self.angle += angle;
+    pub fn rotate(&mut self, angle: f64, delta_time: f64) {
+        self.angle += angle * delta_time;
 
         self.angle = fix_ang(self.angle);
 
@@ -94,15 +94,34 @@ impl Player {
         self.dy = -sin(deg_to_rad(self.angle));
     }
 
-    pub fn move_foward(&mut self) {
-        let new_x = self.x + self.dx * self.speed;
-        let new_y = self.y + self.dy * self.speed;
-        self.set_position(new_x, new_y);
-    }
+    pub fn translate(&mut self, dir_x: i8, dir_y: i8, delta_time: f64) {
+        let mut new_x = self.x;
+        let mut new_y = self.y;
 
-    pub fn move_backward(&mut self) {
-        let new_x = self.x - self.dx * self.speed;
-        let new_y = self.y - self.dy * self.speed;
+        let speed = self.speed * delta_time;
+        let dx = self.dx * speed;
+        let dy = self.dy * speed;
+
+        if dir_x > 0 { // Move forward
+            new_x += dx;
+            new_y += dy;
+        }
+
+        if dir_x < 0 { // Move backward
+            new_x -= dx;
+            new_y -= dy;
+        }
+
+        if dir_y > 0 { // Strafe right
+            new_x += dy;
+            new_y -= dx;
+        }
+
+        if dir_y < 0 { // Strafe left
+            new_x -= dy;
+            new_y += dx;
+        }
+
         self.set_position(new_x, new_y);
     }
 }

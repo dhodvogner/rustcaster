@@ -94,10 +94,10 @@
                 const elapsed = timestamp - start;
                 const delta = timestamp - prevTimestamp;
                 
-                draw(delta);
+                draw(delta / 100);
 
                 const fps = Math.round(1000 / delta);
-                fpsdiv.innerText = `${fps}fps`;
+                fpsdiv.innerText = `${fps}fps Delta: ${delta}ms`;
 
                 prevTimestamp = timestamp;
                 requestAnimationFrame(step);

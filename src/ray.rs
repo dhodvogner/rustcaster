@@ -107,14 +107,15 @@ pub fn cast_ray() {
             dist_horizontal = dist_vertical;
         }
 
-        let color = color::Color::new(255, 0, 0, 255);
+        let color = color::Color::new(0, 255, 0, 255);
         draw_line(px, py, rx, ry, color );
 
         //fix fisheye 
         let ca= fix_ang(pa - ra); 
         dist_horizontal = dist_horizontal * cos(deg_to_rad(ca));
 
-        // draw the wall
+        // Draw the 3D walls
+        // Render window is 320x160
         let mut line_height = (maps as f64 * 320.0) / dist_horizontal;
         if line_height > 320.0 { line_height = 320.0; }
         let line_off = 160.0 - (line_height / 2.0);

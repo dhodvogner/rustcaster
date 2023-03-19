@@ -103,9 +103,11 @@ fn main() {
         gl::Viewport(0, 0, WIDTH, HEIGHT);
     }
 
+    let mut last_time = std::time::Instant::now();
+
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
-    
+
         match event {
             Event::LoopDestroyed => (),
             Event::WindowEvent { event, .. } => match event {
@@ -131,12 +133,15 @@ fn main() {
                 _ => (),
             },
             Event::RedrawRequested(_) => {
+                 let now = std::time::Instant::now();
+                 let delta_time = (now - last_time).as_secs_f64() * 10.0; //Humm...
+                 last_time = now;
+                 
                 unsafe {
                     gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                     gl::Clear(gl::COLOR_BUFFER_BIT);
 
-                    // TODO: calculate delta time
-                    present(0.0);
+                    present(delta_time as f64);
 
                     // Generate texture from the output buffer
                     let buffer_ptr = get_output_buffer_pointer();
@@ -169,7 +174,6 @@ fn main() {
     });
 }
 
-// TODO: make an enum for the keys
 fn imitate_js_input(input: KeyboardInput) {
     match input.virtual_keycode {
         Some(VirtualKeyCode::W) => {
@@ -198,6 +202,20 @@ fn imitate_js_input(input: KeyboardInput) {
                 key_down(68);
             } else {
                 key_up(68);
+            }
+        },
+        Some(VirtualKeyCode::Q) => {
+            if input.state == ElementState::Pressed {
+                key_down(81);
+            } else {
+                key_up(81);
+            }
+        },
+        Some(VirtualKeyCode::E) => {
+            if input.state == ElementState::Pressed {
+                key_down(69);
+            } else {
+                key_up(69);
             }
         },
         _ => (),

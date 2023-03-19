@@ -6,6 +6,8 @@ pub struct Input {
     pub down: bool,
     pub left: bool,
     pub right: bool,
+    pub strafe_left: bool,
+    pub strafe_right: bool,
 }
 
 impl Input {
@@ -21,6 +23,8 @@ impl Input {
             down: false,
             left: false,
             right: false,
+            strafe_left: false,
+            strafe_right: false,
         }
     }
 
@@ -30,6 +34,8 @@ impl Input {
             83 => self.down = true, // S
             65 => self.right = true, // A
             68 => self.left = true, // D
+            81 => self.strafe_left = true, // Q
+            69 => self.strafe_right = true, // E
             _ => {}
         }
     }
@@ -40,6 +46,8 @@ impl Input {
             83 => self.down = false, // S
             65 => self.right = false, // D
             68 => self.left = false, // A
+            81 => self.strafe_left = false, // Q
+            69 => self.strafe_right = false, // E
             _ => {}
         }
     }

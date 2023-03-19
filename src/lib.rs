@@ -79,24 +79,32 @@ pub fn key_up(key: u8) {
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-pub fn present(_dt: f64) {
+pub fn present(delta_time: f64) {
     let color = color::Color::new(76, 76, 76, 255);
     fill(color);
 
     if Input::global().up {
-        Player::global().move_foward();
+        Player::global().translate(1, 0, delta_time);
     }
 
     if Input::global().down {
-        Player::global().move_backward();
+        Player::global().translate(-1, 0, delta_time);
+    }
+
+    if Input::global().strafe_left {
+        Player::global().translate(0, 1, delta_time);
+    }
+
+    if Input::global().strafe_right {
+        Player::global().translate(0, -1, delta_time);
     }
 
     if Input::global().left {
-        Player::global().rotate(-Player::global().turn_speed);
+        Player::global().rotate(-Player::global().turn_speed, delta_time);
     }
 
     if Input::global().right {
-        Player::global().rotate(Player::global().turn_speed);
+        Player::global().rotate(Player::global().turn_speed, delta_time);
     }
 
     Map::global().draw_2d();
