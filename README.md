@@ -6,24 +6,21 @@ Based on: [3DSage's Make Your Own Raycaster series](https://www.youtube.com/watc
 
 Why? Just for fun and learning. 🙂
 
-## 🖥 On desktop
+## 🖥 Run on desktop
 
 ```shell
+$ cargo run
+// OR
 $ cargo run --release
 ```
-In debug mode it's too slow to be playable. 😅
 
-## 🛠️ Build for web
+## 🌐 Run on web
 
 ```shell
 $ wasm-pack build --target web
 // OR
 $ npm run build
-```
-
-## 🚀 Run
-
-```shell
+// Then
 $ npm run serve
 // Then navigate to http://localhost:8080/public
 ```
