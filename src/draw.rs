@@ -23,6 +23,11 @@ pub fn put_pixel(x: f64, y: f64, color: color::Color, output_buffer: &mut MutexG
     output_buffer[rgba_index + 3] = color.a;
 }
 
+pub fn draw_pixel(x: f64, y: f64, color: color::Color) {
+    let mut locked_buffer = Screen::global().output_buffer.lock().unwrap();
+    put_pixel(x, y, color, &mut locked_buffer);
+}
+
 pub fn fill(color: color::Color) {
     let mut locked_buffer = Screen::global().output_buffer.lock().unwrap();
     for y in 0..Screen::global().height {

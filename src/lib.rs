@@ -6,6 +6,7 @@ mod player;
 mod map;
 mod input;
 mod ray;
+mod texture;
 
 use std::panic;
 use once_cell::sync::OnceCell;

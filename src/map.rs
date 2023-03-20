@@ -8,6 +8,8 @@ pub struct Map {
     pub y: i32,
     pub s: i32,
     pub data: Vec<i32>,
+    pub floor_data: Vec<i32>,
+    pub ceiling_data: Vec<i32>,
 }
 
 impl Map {
@@ -31,12 +33,36 @@ impl Map {
             1,1,1,1,1,1,1,1,
         ];
 
+        let floor_data = [
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+        ];
+
+        let ceiling_data = [
+            0,0,0,0,1,1,1,1,
+            0,0,0,0,1,1,1,1,
+            0,0,0,0,1,1,1,1,
+            0,0,0,0,1,1,1,1,
+            0,0,0,0,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+        ];
+
 
         Map { 
             x, 
             y, 
             s, 
-            data: data.to_vec()
+            data: data.to_vec(),
+            floor_data: floor_data.to_vec(),
+            ceiling_data: ceiling_data.to_vec(),
          }
     }
 
