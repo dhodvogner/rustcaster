@@ -57,7 +57,7 @@ pub fn cast_ray() {
             let my = ry as i32 / 64;
             let mp = my * mapx + mx;
 
-            if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] == 1 {
+            if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] > 0 {
                 vmt = Map::global().data[mp as usize] - 1;
                 dof = 8; // hit wall
                 dist_vertical = cos(deg_to_rad(ra)) * (rx-px) - sin(deg_to_rad(ra)) * (ry-py);
@@ -99,7 +99,8 @@ pub fn cast_ray() {
             let my = ry as i32 / 64;
             let mp = my * mapx + mx;
 
-            if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] == 1 {
+            if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] > 0 {
+                hmt = Map::global().data[mp as usize] - 1;
                 dof = 8; // hit wall
                 dist_horizontal = cos(deg_to_rad(ra)) * (rx-px) - sin(deg_to_rad(ra)) * (ry-py);
             } else { // next line
@@ -144,22 +145,20 @@ pub fn cast_ray() {
         let x = _r as f64 * line_width as f64 + offset;
 
         let mut ty = ty_off * ty_step + (hmt * 32) as f64;
-        let mut tx = 0.0;
+        let mut tx;
 
         if shade == 1.0 {
-            tx = rx / 2.0 % 32.0;
-            if ra > 180.0 { tx = 31.0 - tx; }
+            tx = (rx / 2.0) as i32 % 32;
+            if ra > 180.0 { tx = 31 - tx; }
         } else {
-            tx = ry / 2.0 % 32.0;
-            if ra > 90.0 && ra < 270.0 { tx = 31.0 - tx; }
+            tx = (ry / 2.0) as i32 % 32;
+            if ra > 90.0 && ra < 270.0 { tx = 31 - tx; }
         }
-
-        if tx > 31.0 { tx = 31.0; } // it should never be greater than 31.0 with hmt 0
 
         // Drawing the walls
         for y in 0..line_height as i32 {
 
-            let texture_index = (ty.round() * 32.0 + tx.round()) as usize;
+            let texture_index = (ty as i32 * 32 + tx as i32) as usize;
 
             if texture_index > TEXTURE.len() {
                 cfg_if::cfg_if! {
@@ -184,7 +183,6 @@ pub fn cast_ray() {
             }
 
             ty += ty_step;
-            if ty > 31.0 { ty = 31.0; } // it should never be greater than 31.0 with hmt 0
         }
 
         // // Draw walls as simple 8px lines
@@ -203,10 +201,10 @@ pub fn cast_ray() {
             let ra_fix = cos(deg_to_rad(fix_ang(pa - ra)));
 
             // Draw the floor
-            tx = px / 2.0 + cos(deg) * 158.0 * 32.0 / dy / ra_fix;
-            ty = py / 2.0 - sin(deg) * 158.0 * 32.0 / dy / ra_fix;
+            let tx = px / 2.0 + cos(deg) * 158.0 * 32.0 / dy / ra_fix;
+            let ty = py / 2.0 - sin(deg) * 158.0 * 32.0 / dy / ra_fix;
 
-            let map_index = (ty / 32.0 * mapx as f64 + tx / 32.0) as usize;
+            let map_index = (ty as i32 / 32 * mapx + tx as i32 / 32) as usize;
             
             let mut mp = 0;
 
@@ -222,8 +220,8 @@ pub fn cast_ray() {
                 mp = Map::global().floor_data[map_index] * 32 * 32;
             }
 
-            let texture_x = (tx as i32) & 31;
-            let texture_y = (ty as i32) & 31;
+            let texture_x = tx as i32 & 31;
+            let texture_y = ty as i32 & 31;
 
             let texture_index = (texture_y * 32 + texture_x + mp) as usize;
             let color = (TEXTURE[texture_index] as f64 * 255.0) * 0.7;
@@ -250,17 +248,18 @@ pub fn cast_ray() {
                 mp = Map::global().ceiling_data[map_index] * 32 * 32;
             }
 
-            let mut color = color::Color::new(135, 206, 235, 255);
-            if mp == 0 {
+            //let mut color = color::Color::new(135, 206, 235, 255);
+            //if mp == 0 {
                 let texture_index = (texture_y * 32 + texture_x + mp) as usize;
+                //println!("y: {} map_index: {} mp: {} texture_index: {}", y, map_index, mp, texture_index);
                 let texture_color = (TEXTURE[texture_index] as f64 * 255.0) * 0.7;
-                color = color::Color::new(
+                let color = color::Color::new(
                     texture_color as u8, 
                     texture_color as u8, 
                     texture_color as u8, 
                     255
                 );
-            }
+            //}
             
             for _i in 0..line_width {
                 draw_pixel(

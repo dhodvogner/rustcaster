@@ -218,6 +218,13 @@ fn imitate_js_input(input: KeyboardInput) {
                 key_up(69);
             }
         },
+        Some(VirtualKeyCode::Space) => {
+            if input.state == ElementState::Pressed {
+                key_down(32);
+            } else {
+                key_up(32);
+            }
+        },
         _ => (),
     }
 }
