@@ -58,4 +58,11 @@ impl Map {
             }
         }
     }
+
+    pub fn get_wall(&self, x: i32, y: i32) -> i32 {
+        let index = y * self.x + x;
+        self.data[index as usize]
+    }
+
+
 }
