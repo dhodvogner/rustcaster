@@ -1,6 +1,7 @@
 # Rustcaster
 
 Pseudo-3D raycaster implementation in Rust without any graphics API.
+
 (I only use OpenGL/HtmlCanvas for rendering the final image to the screen)
 
 ## 🤨 But Why? 
