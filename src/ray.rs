@@ -1,3 +1,6 @@
+#[cfg(target_arch = "wasm32")]
+use web_sys::console;
+
 use crate::color;
 use crate::map::Map;
 use crate::player::Player;
@@ -151,18 +154,24 @@ pub fn cast_ray() {
             if ra > 90.0 && ra < 270.0 { tx = 31.0 - tx; }
         }
 
+        if tx > 31.0 { tx = 31.0; } // it should never be greater than 31.0 with hmt 0
+
         // Drawing the walls
         for y in 0..line_height as i32 {
 
-            let mut texture_index = (ty.round() * 32.0 + tx.round()) as usize;
+            let texture_index = (ty.round() * 32.0 + tx.round()) as usize;
 
-            // TODO: fix this
-            if texture_index >= TEXTURE.len() {
-                println!("Wall texture index is out of bounds! {}", texture_index);
-                println!("tx: {}, ty: {}", ty.round(), tx.round());
-                texture_index = TEXTURE.len() - 1;
+            if texture_index > TEXTURE.len() {
+                cfg_if::cfg_if! {
+                    if #[cfg(target_arch = "wasm32")] {
+                        console::warn_1(&format!("Wall texture index is out of bounds! {}", texture_index).into());
+                    } else {
+                        println!("Wall texture index is out of bounds! {}", texture_index);
+                    }
+                }
             }
 
+            
             let color = (TEXTURE[texture_index] as f64 * 255.0 * shade) as u8;
             let color = color::Color::new(color, color, color, 255);
 
@@ -175,6 +184,7 @@ pub fn cast_ray() {
             }
 
             ty += ty_step;
+            if ty > 31.0 { ty = 31.0; } // it should never be greater than 31.0 with hmt 0
         }
 
         // // Draw walls as simple 8px lines
@@ -201,7 +211,13 @@ pub fn cast_ray() {
             let mut mp = 0;
 
             if map_index > Map::global().floor_data.len() {
-                println!("Floor texture index is out of bounds! {}", map_index); // TODO: fix this
+                cfg_if::cfg_if! {
+                    if #[cfg(target_arch = "wasm32")] {
+                        console::warn_1(&format!("Floor texture index is out of bounds! {}", map_index).into());
+                    } else {
+                        println!("Floor texture index is out of bounds! {}", map_index);
+                    }
+                }
             } else {
                 mp = Map::global().floor_data[map_index] * 32 * 32;
             }
@@ -223,7 +239,13 @@ pub fn cast_ray() {
 
             // Draw the ceiling
             if map_index > Map::global().ceiling_data.len() {
-                println!("Ceiling texture index is out of bounds! {}", map_index); // TODO: fix this
+                cfg_if::cfg_if! {
+                    if #[cfg(target_arch = "wasm32")] {
+                        console::warn_1(&format!("Ceiling texture index is out of bounds! {}", map_index).into());
+                    } else {
+                        println!("Ceiling texture index is out of bounds! {}", map_index);
+                    }
+                }
             } else {
                 mp = Map::global().ceiling_data[map_index] * 32 * 32;
             }
