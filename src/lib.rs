@@ -121,9 +121,8 @@ pub fn present(delta_time: f64) {
         let ipy_add_yo=(player.y + yo as f64) / 64.0;
 
         let map_index = (ipy_add_yo * map.x as f64 + ipx_add_xo) as usize;
-        if map.data[map_index] == 4 { map.set_wall(map_index, 0); }
-
-
+        if map.data[map_index] == 4 { map.set_wall(map_index, 0); } 
+        // FIXME: I don't know why, but the door is not always opening...
     }
 
     Map::global().draw_2d();
