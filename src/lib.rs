@@ -9,7 +9,6 @@ mod ray;
 mod texture;
 
 use std::panic;
-use std::task::Poll;
 use once_cell::sync::OnceCell;
 
 #[cfg(target_arch = "wasm32")]
@@ -113,11 +112,11 @@ pub fn present(delta_time: f64) {
         let player = Player::global();
         let map: &mut Map = Map::global();
 
-        let mut xo; if player.dx < 0.0 { xo=-25;} else{ xo=25; }
-        let mut yo; if player.dy < 0.0 { yo=-25;} else{ yo=25; } 
-        let ipx = player.x / 64.0;
+        let xo; if player.dx < 0.0 { xo=-25;} else{ xo=25; }
+        let yo; if player.dy < 0.0 { yo=-25;} else{ yo=25; } 
+        // let ipx = player.x / 64.0;
         let ipx_add_xo = (player.x + xo as f64 ) / 64.0;
-        let ipy = player.y / 64.0;
+        // let ipy = player.y / 64.0;
         let ipy_add_yo=(player.y + yo as f64) / 64.0;
 
         let map_index = (ipy_add_yo * map.x as f64 + ipx_add_xo) as usize;
