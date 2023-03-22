@@ -4,6 +4,8 @@ Pseudo-3D raycaster implementation in Rust without any graphics API.
 
 (I only use OpenGL/HtmlCanvas for rendering the final image to the screen)
 
+You can try it out [here](https://rustcaster-r53tnd3k4a-lz.a.run.app/).
+
 ## 🤨 But Why? 
 
 Just for fun and learning. 🙂
