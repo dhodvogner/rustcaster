@@ -45,7 +45,7 @@
 
         const run = async () => {
             // Instantiate our wasm module
-            const rustWasm = await wasmInit("../pkg/rustcaster_bg.wasm");
+            const rustWasm = await wasmInit("./pkg/rustcaster_bg.wasm");
 
             const {
                 canvasContext,

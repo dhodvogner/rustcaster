@@ -52,7 +52,7 @@ pub fn setup(width: i32, height: i32) {
     let screen = Screen::new(width, height);
     SCREEN_INSTANCE.set(screen).unwrap();
 
-    let player = Player::new(100.0, 100.0);
+    let player = Player::new(300.0, 300.0);
     unsafe { PLAYER_INSTANCE.set(player).unwrap() };
 
     let map = Map::new();
