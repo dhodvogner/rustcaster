@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "serve": "npx http-server -p 8080 -c-1 .",
+        "serve": "npx http-server -p 8080 -c-1 ./public",
         "build": "wasm-pack build --target web --out-dir ./public/pkg"
     }
 }

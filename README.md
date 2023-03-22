@@ -19,12 +19,9 @@ $ cargo run --release
 ## 🌐 Run on web
 
 ```shell
-$ wasm-pack build --target web
-// OR
 $ npm run build
-// Then
 $ npm run serve
-// Then navigate to http://localhost:8080/public
+// Then navigate to http://localhost:8080/
 ```
 
 ## 🕹 Controls
@@ -36,12 +33,12 @@ $ npm run serve
 
 ## 📝 Plans
 
-- [ ] TODOs and FIXMEs
 - [ ] Refactor the raycasting code (it's a bit messy)
 - [ ] Add proper texture support (32x32 sRBG pngs or a similar format, TextureAtlas?)
 - [ ] Implement billboard sprites (https://www.youtube.com/watch?v=w0Bm4IA-Ii8)
 - [ ] Restructure the code to be a bit better, clean up main.rs messy OpenGL code.
 - [ ] Maybe add a gun and shooting enemies?
+- [ ] TODOs and FIXMEs
 - [ ] GBA port? 😅 (gba crate, agb crate)
 
 ## 📚 Resources
