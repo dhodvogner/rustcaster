@@ -68,6 +68,10 @@ impl Player {
         self.y = py;
     }
 
+    pub fn get_position(&self) -> (f64, f64) {
+        (self.x.clone(), self.y.clone())
+    }
+
     pub fn draw_2d(&self) {
         let color = color::Color::new(255, 255, 0, 255);
 
