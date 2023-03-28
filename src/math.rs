@@ -8,8 +8,12 @@ pub fn deg_to_rad(degrees: f64) -> f64 {
 
 pub fn fix_ang(a: f64) -> f64 {
     let mut res = a;
-    if res > 359.0 { res -= 360.0; }
-    if res < 0.0 { res += 360.0; }
+    if res > 359.0 {
+        res -= 360.0;
+    }
+    if res < 0.0 {
+        res += 360.0;
+    }
     res
 }
 
@@ -31,10 +35,18 @@ pub fn confine_point_to_screen(x: f64, y: f64, width: f64, height: f64) -> (f64,
     let mut x = x;
     let mut y = y;
 
-    if x < 0.0 { x = 0.0; }
-    if y < 0.0 { y = 0.0; }
-    if x > screen_width - width { x = screen_width - width; }
-    if y > screen_height - height { y = screen_height - height; }
+    if x < 0.0 {
+        x = 0.0;
+    }
+    if y < 0.0 {
+        y = 0.0;
+    }
+    if x > screen_width - width {
+        x = screen_width - width;
+    }
+    if y > screen_height - height {
+        y = screen_height - height;
+    }
 
     (x, y)
 }

@@ -1,9 +1,9 @@
-use crate::PLAYER_INSTANCE;
 use crate::color;
 use crate::draw::draw_line;
-use crate::draw::{draw_rect};
-use crate::math::{fix_ang, deg_to_rad, sin, cos, confine_point_to_screen};
+use crate::draw::draw_rect;
 use crate::map::Map;
+use crate::math::{confine_point_to_screen, cos, deg_to_rad, fix_ang, sin};
+use crate::PLAYER_INSTANCE;
 
 #[derive(Debug)]
 pub struct Player {
@@ -24,7 +24,9 @@ pub struct Player {
 impl Player {
     pub fn global() -> &'static mut Player {
         unsafe {
-            PLAYER_INSTANCE.get_mut().expect("Player instance not initialized")
+            PLAYER_INSTANCE
+                .get_mut()
+                .expect("Player instance not initialized")
         }
     }
 
@@ -35,8 +37,8 @@ impl Player {
 
         let (offset_x, offset_y) = Player::calculate_offset(dx, dy);
 
-        Player { 
-            x, 
+        Player {
+            x,
             y,
             dx,
             dy,
@@ -53,15 +55,19 @@ impl Player {
         let mut offset_x = 20.0;
         let mut offset_y = 20.0;
 
-        if dx < 0.0 { offset_x = -20.0; }
-        if dy < 0.0 { offset_y = -20.0; }
+        if dx < 0.0 {
+            offset_x = -20.0;
+        }
+        if dy < 0.0 {
+            offset_y = -20.0;
+        }
 
         (offset_x, offset_y)
     }
 
     pub fn set_position(&mut self, x: f64, y: f64) {
         // Usign half size because the player origin should be in the center.
-        let half_size = self.size / 2.0; 
+        let half_size = self.size / 2.0;
         let (px, py) = confine_point_to_screen(x, y, half_size, half_size);
 
         self.x = px;
@@ -74,10 +80,11 @@ impl Player {
         // Usign half size because the player origin should be in the center.
         let half_size = self.size / 2.0;
         draw_rect(
-            (self.x - half_size) as i32, 
-            (self.y - half_size) as i32, 
-            self.size as i32, 
-            self.size as i32, color
+            (self.x - half_size) as i32,
+            (self.y - half_size) as i32,
+            self.size as i32,
+            self.size as i32,
+            color,
         );
 
         // Draw the player direction line
@@ -119,24 +126,44 @@ impl Player {
 
         let map = Map::global();
 
-        if dir_x > 0 { // Move forward
-            if map.get_wall(ipx_add_xoff, ipy,) == 0 { new_x += dx; }
-            if map.get_wall( ipx, ipy_add_yoff) == 0 { new_y += dy; }
+        if dir_x > 0 {
+            // Move forward
+            if map.get_wall(ipx_add_xoff, ipy) == 0 {
+                new_x += dx;
+            }
+            if map.get_wall(ipx, ipy_add_yoff) == 0 {
+                new_y += dy;
+            }
         }
 
-        if dir_x < 0 { // Move backward
-            if map.get_wall(ipx_sub_xoff, ipy) == 0 { new_x -= dx; }
-            if map.get_wall(ipx, ipy_sub_yoff) == 0 { new_y -= dy; }
+        if dir_x < 0 {
+            // Move backward
+            if map.get_wall(ipx_sub_xoff, ipy) == 0 {
+                new_x -= dx;
+            }
+            if map.get_wall(ipx, ipy_sub_yoff) == 0 {
+                new_y -= dy;
+            }
         }
 
-        if dir_y > 0 { // Strafe right
-            if map.get_wall(ipx_add_xoff, ipy) == 0 { new_x += dy; }
-            if map.get_wall(ipx, ipy_sub_yoff) == 0 { new_y -= dx; }
+        if dir_y > 0 {
+            // Strafe right
+            if map.get_wall(ipx_add_xoff, ipy) == 0 {
+                new_x += dy;
+            }
+            if map.get_wall(ipx, ipy_sub_yoff) == 0 {
+                new_y -= dx;
+            }
         }
 
-        if dir_y < 0 { // Strafe left
-            if map.get_wall(ipx_sub_xoff, ipy) == 0 { new_x -= dy; }
-            if map.get_wall(ipx, ipy_add_yoff) == 0 { new_y += dx; }
+        if dir_y < 0 {
+            // Strafe left
+            if map.get_wall(ipx_sub_xoff, ipy) == 0 {
+                new_x -= dy;
+            }
+            if map.get_wall(ipx, ipy_add_yoff) == 0 {
+                new_y += dx;
+            }
         }
 
         self.set_position(new_x, new_y);

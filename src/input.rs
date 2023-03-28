@@ -14,7 +14,9 @@ pub struct Input {
 impl Input {
     pub fn global() -> &'static mut Input {
         unsafe {
-            INPUT_INSTANCE.get_mut().expect("Input instance not initialized")
+            INPUT_INSTANCE
+                .get_mut()
+                .expect("Input instance not initialized")
         }
     }
 
@@ -32,28 +34,27 @@ impl Input {
 
     pub fn key_down(&mut self, key: u8) {
         match key {
-            87 => self.up = true, // W
-            83 => self.down = true, // S
-            65 => self.right = true, // A
-            68 => self.left = true, // D
-            81 => self.strafe_left = true, // Q
+            87 => self.up = true,           // W
+            83 => self.down = true,         // S
+            65 => self.right = true,        // A
+            68 => self.left = true,         // D
+            81 => self.strafe_left = true,  // Q
             69 => self.strafe_right = true, // E
-            32 => self.open_door = true, // Space
+            32 => self.open_door = true,    // Space
             _ => {}
         }
     }
 
     pub fn key_up(&mut self, key: u8) {
         match key {
-            87 => self.up = false, // W
-            83 => self.down = false, // S
-            65 => self.right = false, // D
-            68 => self.left = false, // A
-            81 => self.strafe_left = false, // Q
+            87 => self.up = false,           // W
+            83 => self.down = false,         // S
+            65 => self.right = false,        // D
+            68 => self.left = false,         // A
+            81 => self.strafe_left = false,  // Q
             69 => self.strafe_right = false, // E
-            32 => self.open_door = false, // Space
+            32 => self.open_door = false,    // Space
             _ => {}
         }
     }
 }
-

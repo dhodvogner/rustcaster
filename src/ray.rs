@@ -2,14 +2,14 @@
 use web_sys::console;
 
 use crate::color;
-use crate::map::Map;
-use crate::player::Player;
 use crate::draw::{draw_line, draw_pixel};
-use crate::math::{fix_ang, deg_to_rad, sin, cos, tan};
+use crate::map::Map;
+use crate::math::{cos, deg_to_rad, fix_ang, sin, tan};
+use crate::player::Player;
 use crate::texture::TEXTURE;
- 
+
 pub fn cast_ray() {
-    let mut rx; 
+    let mut rx;
     let mut ry;
 
     let mut xo = 0.0;
@@ -32,19 +32,20 @@ pub fn cast_ray() {
         let mut dof = 0;
         let n_tan = tan(deg_to_rad(ra));
 
-        if cos(deg_to_rad(ra))> 0.001 { // looking left
+        if cos(deg_to_rad(ra)) > 0.001 {
+            // looking left
             rx = ((px / 64.0).floor() * 64.0) + 64.0;
             ry = (px - rx) * n_tan + py;
             xo = 64.0;
             yo = -xo * n_tan;
-        }
-        else if cos(deg_to_rad(ra)) < -0.001 { // looking right
+        } else if cos(deg_to_rad(ra)) < -0.001 {
+            // looking right
             rx = ((px / 64.0).floor() * 64.0) - 0.0001;
             ry = (px - rx) * n_tan + py;
             xo = -64.0;
             yo = -xo * n_tan;
-        }
-        else { // looking up or down
+        } else {
+            // looking up or down
             rx = px;
             ry = py;
             dof = 8;
@@ -60,8 +61,9 @@ pub fn cast_ray() {
             if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] > 0 {
                 vmt = Map::global().data[mp as usize] - 1;
                 dof = 8; // hit wall
-                dist_vertical = cos(deg_to_rad(ra)) * (rx-px) - sin(deg_to_rad(ra)) * (ry-py);
-            } else { // next line
+                dist_vertical = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+            } else {
+                // next line
                 rx += xo;
                 ry += yo;
                 dof += 1;
@@ -76,22 +78,23 @@ pub fn cast_ray() {
         let mut dist_horizontal = 100000.0;
         let a_tan = 1.0 / tan(deg_to_rad(ra));
 
-        if sin(deg_to_rad(ra)) > 0.001 { // looking up
+        if sin(deg_to_rad(ra)) > 0.001 {
+            // looking up
             ry = ((py / 64.0).floor() * 64.0) - 0.0001;
             rx = (py - ry) * a_tan + px;
             yo = -64.0;
             xo = -yo * a_tan;
-        }
-        else if sin(deg_to_rad(ra)) < -0.001 { // looking down
+        } else if sin(deg_to_rad(ra)) < -0.001 {
+            // looking down
             ry = ((py / 64.0).floor() * 64.0) + 64.0;
             rx = (py - ry) * a_tan + px;
             yo = 64.0;
             xo = -yo * a_tan;
-        }
-        else { // looking left or right
+        } else {
+            // looking left or right
             rx = px;
             ry = py;
-            dof = 8;   
+            dof = 8;
         }
 
         while dof < 8 {
@@ -102,8 +105,9 @@ pub fn cast_ray() {
             if mp > 0 && mp < mapx * mapy && Map::global().data[mp as usize] > 0 {
                 hmt = Map::global().data[mp as usize] - 1;
                 dof = 8; // hit wall
-                dist_horizontal = cos(deg_to_rad(ra)) * (rx-px) - sin(deg_to_rad(ra)) * (ry-py);
-            } else { // next line
+                dist_horizontal = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+            } else {
+                // next line
                 rx += xo;
                 ry += yo;
                 dof += 1;
@@ -121,10 +125,10 @@ pub fn cast_ray() {
         }
 
         let color = color::Color::new(0, 255, 0, 255);
-        draw_line(px, py, rx, ry, color );
+        draw_line(px, py, rx, ry, color);
 
-        //fix fisheye 
-        let ca= fix_ang(pa - ra); 
+        //fix fisheye
+        let ca = fix_ang(pa - ra);
         dist_horizontal = dist_horizontal * cos(deg_to_rad(ca));
 
         // Draw the 3D walls
@@ -134,9 +138,9 @@ pub fn cast_ray() {
         let ty_step = 32.0 / line_height;
         let mut ty_off = 0.0;
 
-        if line_height > 320.0 { 
+        if line_height > 320.0 {
             ty_off = (line_height - 320.0) / 2.0;
-            line_height = 320.0; 
+            line_height = 320.0;
         }
         let line_off = 160.0 - (line_height / 2.0);
 
@@ -149,15 +153,18 @@ pub fn cast_ray() {
 
         if shade == 1.0 {
             tx = (rx / 2.0) as i32 % 32;
-            if ra > 180.0 { tx = 31 - tx; }
+            if ra > 180.0 {
+                tx = 31 - tx;
+            }
         } else {
             tx = (ry / 2.0) as i32 % 32;
-            if ra > 90.0 && ra < 270.0 { tx = 31 - tx; }
+            if ra > 90.0 && ra < 270.0 {
+                tx = 31 - tx;
+            }
         }
 
         // Drawing the walls
         for y in 0..line_height as i32 {
-
             let texture_index = (ty as i32 * 32 + tx as i32) as usize;
 
             if texture_index > TEXTURE.len() {
@@ -170,16 +177,11 @@ pub fn cast_ray() {
                 }
             }
 
-            
             let color = (TEXTURE[texture_index] as f64 * 255.0 * shade) as u8;
             let color = color::Color::new(color, color, color, 255);
 
             for _i in 0..line_width {
-                draw_pixel(
-                    x + _i as f64, 
-                    y as f64 + line_off, 
-                    color
-                );
+                draw_pixel(x + _i as f64, y as f64 + line_off, color);
             }
 
             ty += ty_step;
@@ -193,7 +195,7 @@ pub fn cast_ray() {
         // }
 
         // Draw the floors and the ceiling
-        
+
         let mut y = line_off + line_height;
         while y < 320.0 {
             let dy = y - (320. / 2.0);
@@ -205,7 +207,7 @@ pub fn cast_ray() {
             let ty = py / 2.0 - sin(deg) * 158.0 * 32.0 / dy / ra_fix;
 
             let map_index = (ty as i32 / 32 * mapx + tx as i32 / 32) as usize;
-            
+
             let mut mp = 0;
 
             if map_index > Map::global().floor_data.len() {
@@ -228,11 +230,7 @@ pub fn cast_ray() {
             let color = color::Color::new(color as u8, color as u8, color as u8, 255);
             //let color = color::Color::new(255, 0, 0, 255);
             for _i in 0..line_width {
-                draw_pixel(
-                    x + _i as f64, 
-                    y,
-                    color
-                );
+                draw_pixel(x + _i as f64, y, color);
             }
 
             // Draw the ceiling
@@ -250,30 +248,24 @@ pub fn cast_ray() {
 
             //let mut color = color::Color::new(135, 206, 235, 255);
             //if mp == 0 {
-                let texture_index = (texture_y * 32 + texture_x + mp) as usize;
-                //println!("y: {} map_index: {} mp: {} texture_index: {}", y, map_index, mp, texture_index);
-                let texture_color = (TEXTURE[texture_index] as f64 * 255.0) * 0.7;
-                let color = color::Color::new(
-                    texture_color as u8, 
-                    texture_color as u8, 
-                    texture_color as u8, 
-                    255
-                );
+            let texture_index = (texture_y * 32 + texture_x + mp) as usize;
+            //println!("y: {} map_index: {} mp: {} texture_index: {}", y, map_index, mp, texture_index);
+            let texture_color = (TEXTURE[texture_index] as f64 * 255.0) * 0.7;
+            let color = color::Color::new(
+                texture_color as u8,
+                texture_color as u8,
+                texture_color as u8,
+                255,
+            );
             //}
-            
+
             for _i in 0..line_width {
-                draw_pixel(
-                    x + _i as f64, 
-                    320.0 - y,
-                    color
-                );
+                draw_pixel(x + _i as f64, 320.0 - y, color);
             }
 
             y += 1.0;
         }
-        
 
         ra = fix_ang(ra - 1.0);
     }
 }
-

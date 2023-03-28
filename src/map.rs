@@ -1,6 +1,6 @@
-use crate::MAP_INSTANCE;
 use crate::color;
-use crate::draw::{draw_rect};
+use crate::draw::draw_rect;
+use crate::MAP_INSTANCE;
 
 #[derive(Debug)]
 pub struct Map {
@@ -15,7 +15,9 @@ pub struct Map {
 impl Map {
     pub fn global() -> &'static mut Map {
         unsafe {
-            MAP_INSTANCE.get_mut().expect("Map instance not initialized")
+            MAP_INSTANCE
+                .get_mut()
+                .expect("Map instance not initialized")
         }
     }
 
@@ -25,54 +27,38 @@ impl Map {
         let s = 64;
 
         let data = [
-            1,1,1,1,1,3,1,1,
-            1,0,0,1,0,0,0,1,
-            1,0,0,4,0,2,0,1,
-            1,1,4,1,0,0,0,1,
-            2,0,0,0,0,0,0,1,
-            2,0,0,0,0,1,0,1,
-            2,0,0,0,0,0,0,1,
-            1,1,3,1,3,1,3,1,
+            1, 1, 1, 1, 1, 3, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 4, 0, 2, 0, 1, 1, 1, 4, 1, 0,
+            0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+            3, 1, 3, 1, 3, 1,
         ];
 
         let floor_data = [
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,1,1,0,0,
-            0,0,0,0,2,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,2,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,1,1,1,1,0,0,0,
-            0,0,0,0,0,0,0,0,	
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
         ];
 
         let ceiling_data = [
-            0,0,0,0,0,0,0,0,
-            0,1,1,1,0,0,0,0,
-            0,1,1,1,0,0,0,0,
-            0,1,1,1,0,0,1,0,
-            0,1,3,1,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0,
+            0, 1, 0, 0, 1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
         ];
 
-
-        Map { 
-            x, 
-            y, 
-            s, 
+        Map {
+            x,
+            y,
+            s,
             data: data.to_vec(),
             floor_data: floor_data.to_vec(),
             ceiling_data: ceiling_data.to_vec(),
-         }
+        }
     }
 
     pub fn draw_2d(&self) {
-        for y in 0..self.y  {
+        for y in 0..self.y {
             for x in 0..self.x {
                 let color;
-                let index = y* self.x + x;
+                let index = y * self.x + x;
                 if self.data[index as usize] > 0 {
                     color = color::Color::new(255, 255, 255, 255);
                 } else {
@@ -95,5 +81,4 @@ impl Map {
     pub fn set_wall(&mut self, index: usize, value: i32) {
         self.data[index as usize] = value;
     }
-
 }

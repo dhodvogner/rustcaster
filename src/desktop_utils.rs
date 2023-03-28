@@ -1,14 +1,10 @@
 use gl::types::*;
+use std::ffi::CString;
 use std::ptr;
 use std::str;
-use std::ffi::CString;
 
 // Vertex data
-pub static VERTEX_DATA: [GLfloat; 9] = [
-    -0.5, -0.5, 0.0,
-     0.5, -0.5, 0.0,
-     0.0,  0.5, 0.0
-];
+pub static VERTEX_DATA: [GLfloat; 9] = [-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
 
 // Shader sources
 pub static VS_SRC: &'static str = "#version 330 core
@@ -28,8 +24,7 @@ pub static VS_SRC: &'static str = "#version 330 core
         ourColor = vec3(1.0, 0.0, 0.0);
 
         gl_Position = vec4( x, y, 0.0, 1.0);
-    }"
-;
+    }";
 
 pub static FS_SRC: &'static str = "#version 330 core
     out vec4 FragColor;
@@ -42,8 +37,7 @@ pub static FS_SRC: &'static str = "#version 330 core
     void main() {
         FragColor = texture(ourTexture, TexCoord); 
         // FragColor = vec4(ourColor, 1.0);
-    }"
-;
+    }";
 
 pub fn compile_shader(src: &str, ty: GLenum) -> GLuint {
     let shader;

@@ -6,17 +6,17 @@ mod desktop_utils;
 use std::mem;
 use std::ptr;
 //use std::ffi::CString;
-use glutin::event::{Event, WindowEvent, KeyboardInput, VirtualKeyCode, ElementState};
+use gl::types::*;
+use glutin::event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent};
 use glutin::event_loop::{ControlFlow, EventLoop};
 use glutin::window::WindowBuilder;
 use glutin::{Api, ContextBuilder, GlRequest};
-use gl::types::*;
 
-use rustcaster::{init_lib, setup, present, get_output_buffer_pointer, key_up, key_down};
-use desktop_utils::{compile_shader, link_program, VS_SRC, FS_SRC, VERTEX_DATA};
+use desktop_utils::{compile_shader, link_program, FS_SRC, VERTEX_DATA, VS_SRC};
+use rustcaster::{get_output_buffer_pointer, init_lib, key_down, key_up, present, setup};
 
-static WIDTH : i32 = 1024;
-static HEIGHT : i32 = 512;
+static WIDTH: i32 = 1024;
+static HEIGHT: i32 = 512;
 
 fn main() {
     init_lib();
@@ -34,7 +34,7 @@ fn main() {
         .expect("Cannot create window");
 
     // It is essential to make the context current before calling `gl::load_with`.
-    let gl_context = unsafe { 
+    let gl_context = unsafe {
         gl_context
             .make_current()
             .expect("Cannot make context current")
@@ -87,7 +87,7 @@ fn main() {
         //     0,
         //     ptr::null(),
         // );
-    
+
         //println!("Data specified");
 
         gl::GenTextures(1, &mut texture);
@@ -97,7 +97,11 @@ fn main() {
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
         // Set texture filtering parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR_MIPMAP_LINEAR as i32);
+        gl::TexParameteri(
+            gl::TEXTURE_2D,
+            gl::TEXTURE_MIN_FILTER,
+            gl::LINEAR_MIPMAP_LINEAR as i32,
+        );
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
 
         gl::Viewport(0, 0, WIDTH, HEIGHT);
@@ -117,7 +121,7 @@ fn main() {
                 WindowEvent::KeyboardInput { input, .. } => {
                     //println!("Kyeboard input: {:?}", input);
                     imitate_js_input(input);
-                },
+                }
                 WindowEvent::CloseRequested => {
                     // Cleanup
                     unsafe {
@@ -129,14 +133,14 @@ fn main() {
                         gl::DeleteTextures(1, &texture);
                     }
                     *control_flow = ControlFlow::Exit
-                },
+                }
                 _ => (),
             },
             Event::RedrawRequested(_) => {
-                 let now = std::time::Instant::now();
-                 let delta_time = (now - last_time).as_secs_f64() * 10.0; //Humm...
-                 last_time = now;
-                 
+                let now = std::time::Instant::now();
+                let delta_time = (now - last_time).as_secs_f64() * 10.0; //Humm...
+                last_time = now;
+
                 unsafe {
                     gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                     gl::Clear(gl::COLOR_BUFFER_BIT);
@@ -165,10 +169,10 @@ fn main() {
                     gl::DrawArrays(gl::TRIANGLES, 0, 3);
                 }
                 gl_context.swap_buffers().unwrap();
-            },
+            }
             Event::MainEventsCleared => {
                 gl_context.window().request_redraw();
-            },       
+            }
             _ => (),
         }
     });
@@ -182,49 +186,49 @@ fn imitate_js_input(input: KeyboardInput) {
             } else {
                 key_up(87);
             }
-        },
+        }
         Some(VirtualKeyCode::A) => {
             if input.state == ElementState::Pressed {
                 key_down(65);
             } else {
                 key_up(65);
             }
-        },
+        }
         Some(VirtualKeyCode::S) => {
             if input.state == ElementState::Pressed {
                 key_down(83);
             } else {
                 key_up(83);
             }
-        },
+        }
         Some(VirtualKeyCode::D) => {
             if input.state == ElementState::Pressed {
                 key_down(68);
             } else {
                 key_up(68);
             }
-        },
+        }
         Some(VirtualKeyCode::Q) => {
             if input.state == ElementState::Pressed {
                 key_down(81);
             } else {
                 key_up(81);
             }
-        },
+        }
         Some(VirtualKeyCode::E) => {
             if input.state == ElementState::Pressed {
                 key_down(69);
             } else {
                 key_up(69);
             }
-        },
+        }
         Some(VirtualKeyCode::Space) => {
             if input.state == ElementState::Pressed {
                 key_down(32);
             } else {
                 key_up(32);
             }
-        },
+        }
         _ => (),
     }
 }

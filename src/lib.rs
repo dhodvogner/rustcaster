@@ -1,15 +1,15 @@
-mod math;
 mod color;
-mod screen;
 mod draw;
-mod player;
-mod map;
 mod input;
+mod map;
+mod math;
+mod player;
 mod ray;
+mod screen;
 mod texture;
 
-use std::panic;
 use once_cell::sync::OnceCell;
+use std::panic;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -20,12 +20,12 @@ extern crate console_error_panic_hook;
 #[cfg(target_arch = "wasm32")]
 use web_sys::console;
 
-use crate::draw::{fill};
-use crate::screen::Screen;
-use crate::player::Player;
-use crate::map::Map;
+use crate::draw::fill;
 use crate::input::Input;
+use crate::map::Map;
+use crate::player::Player;
 use crate::ray::cast_ray;
+use crate::screen::Screen;
 
 static SCREEN_INSTANCE: OnceCell<Screen> = OnceCell::new();
 static mut PLAYER_INSTANCE: OnceCell<Player> = OnceCell::new();
@@ -112,15 +112,27 @@ pub fn present(delta_time: f64) {
         let player = Player::global();
         let map: &mut Map = Map::global();
 
-        let xo; if player.dx < 0.0 { xo=-25;} else{ xo=25; }
-        let yo; if player.dy < 0.0 { yo=-25;} else{ yo=25; } 
+        let xo;
+        if player.dx < 0.0 {
+            xo = -25;
+        } else {
+            xo = 25;
+        }
+        let yo;
+        if player.dy < 0.0 {
+            yo = -25;
+        } else {
+            yo = 25;
+        }
         // let ipx = player.x / 64.0;
-        let ipx_add_xo = (player.x + xo as f64 ) / 64.0;
+        let ipx_add_xo = (player.x + xo as f64) / 64.0;
         // let ipy = player.y / 64.0;
-        let ipy_add_yo=(player.y + yo as f64) / 64.0;
+        let ipy_add_yo = (player.y + yo as f64) / 64.0;
 
         let map_index = (ipy_add_yo * map.x as f64 + ipx_add_xo) as usize;
-        if map.data[map_index] == 4 { map.set_wall(map_index, 0); } 
+        if map.data[map_index] == 4 {
+            map.set_wall(map_index, 0);
+        }
         // FIXME: I don't know why, but the door is not always opening...
     }
 
@@ -129,6 +141,4 @@ pub fn present(delta_time: f64) {
     cast_ray();
 
     Player::global().draw_2d();
-
 }
-

@@ -11,7 +11,9 @@ pub struct Screen {
 
 impl Screen {
     pub fn global() -> &'static Screen {
-        SCREEN_INSTANCE.get().expect("Screen instance not initialized")
+        SCREEN_INSTANCE
+            .get()
+            .expect("Screen instance not initialized")
     }
 
     pub fn new(width: i32, height: i32) -> Screen {

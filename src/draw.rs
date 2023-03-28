@@ -11,8 +11,12 @@ pub fn put_pixel(x: f64, y: f64, color: color::Color, output_buffer: &mut MutexG
     let y = y as i32;
 
     // Prevent drawing outside of the screen
-    if x < 0 || y < 0 { return; }
-    if x >= Screen::global().width || y >= Screen::global().height { return;}
+    if x < 0 || y < 0 {
+        return;
+    }
+    if x >= Screen::global().width || y >= Screen::global().height {
+        return;
+    }
 
     let number = y * Screen::global().width + x;
     let rgba_index: usize = (number * 4) as usize;
@@ -83,7 +87,7 @@ pub fn draw_line(x1: f64, y1: f64, x2: f64, y2: f64, color: color::Color) {
                 console::warn_1(&format!("Warning: Loop count exceeded").into());
                 } else {
                     println!("Warning: Loop count exceeded");
-                } 
+                }
             }
             break;
         }
